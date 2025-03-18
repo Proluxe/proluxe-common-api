@@ -1,0 +1,5 @@
+.env
+vendor/
+
+application_default_credentials.json
+drawing.pdf
