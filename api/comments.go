@@ -14,8 +14,14 @@ func GET_COMMENTS(c *gin.Context, App *util.App) {
 	whereCondition := "Record_ID__c = '" + recordID + "' ORDER BY CreatedDate ASC"
 
 	comments := model.FetchComments(App.SF.Client, whereCondition)
+	commentMentions := model.FetchMentions(App.SF.Client, whereCondition)
 
-	c.JSON(http.StatusOK, comments)
+	response := gin.H{
+		"Comments":        comments,
+		"CommentMentions": commentMentions,
+	}
+
+	c.JSON(http.StatusOK, response)
 }
 
 func POST_COMMENT(c *gin.Context, App *util.App) {

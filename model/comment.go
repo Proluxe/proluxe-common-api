@@ -9,13 +9,14 @@ import (
 )
 
 type Comment struct {
-	Id         string `json:"Id"`
-	CreatedBy  string `json:"CreatedBy"`
-	Message    string `json:"Message"`
-	RecordID   string `json:"RecordID"`
-	RecordType string `json:"RecordType"` // This needs to be the SF object name
-	Subject    string `json:"Subject"`
-	Avatar     string `json:"Avatar"`
+	Id             string           `json:"Id"`
+	CreatedBy      string           `json:"CreatedBy"`
+	Message        string           `json:"Message"`
+	RecordID       string           `json:"RecordID"`
+	RecordType     string           `json:"RecordType"` // This needs to be the SF object name
+	Subject        string           `json:"Subject"`
+	Avatar         string           `json:"Avatar"`
+	MentionedUsers []CommentMention `json:"MentionedUsers"`
 }
 
 // Fetch cases from Salesforce
@@ -53,14 +54,33 @@ func FetchComments(client *simpleforce.Client, whereCondition string) []Comment 
 }
 
 func (c *Comment) Create(client *simpleforce.Client) {
-	client.SObject("Comment__c").
+	sobj := client.SObject("Comment__c").
 		Set("Created_By__c", c.CreatedBy).
 		Set("Message__c", c.Message).
 		Set("Name", truncateString(c.Message, 50)).
 		Set("Record_ID__c", c.RecordID).
 		Set("Record_Type__c", c.RecordType).
 		Set("Avatar__c", c.Avatar).
-		Create()
+		Create().Get()
+
+	// Add mentions
+	mentions := []CommentMention{}
+	c.MentionedUsers = append([]CommentMention{{
+		Email:      c.CreatedBy,
+		CommentId:  sobj.ID(),
+		RecordID:   c.RecordID,
+		RecordType: c.RecordType,
+	}}, c.MentionedUsers...)
+	for _, user := range c.MentionedUsers {
+		mentions = append(mentions, CommentMention{
+			Email:      user.Email,
+			CommentId:  sobj.ID(),
+			RecordID:   c.RecordID,
+			RecordType: c.RecordType,
+		})
+	}
+
+	AddMentions(client, mentions)
 }
 
 func truncateString(str string, num int) string {
@@ -82,17 +102,7 @@ func (c *Comment) SendNotificationEmail(client *simpleforce.Client) {
 
 	knock.Identify()
 
-	var whereCondition string
-	switch c.RecordType {
-	case "Opportunity":
-		whereCondition = "New_Opportunity_Notification__c = true"
-	case "Lead":
-		whereCondition = "New_Lead_Notification__c = true"
-	default:
-		whereCondition = "Id != null"
-	}
-
-	users := FetchUsers(client, whereCondition)
+	users := FetchMentions(client, fmt.Sprintf("Record_ID__c = '%s' AND Record_Type__c = '%s'", c.RecordID, c.RecordType))
 
 	recipients := make([]string, len(users))
 	for i, user := range users {
