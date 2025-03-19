@@ -11,6 +11,7 @@ import (
 type Comment struct {
 	Id             string           `json:"Id"`
 	CreatedBy      string           `json:"CreatedBy"`
+	CreatedByName  string           `json:"CreatedByName"`
 	Message        string           `json:"Message"`
 	RecordID       string           `json:"RecordID"`
 	RecordType     string           `json:"RecordType"` // This needs to be the SF object name
@@ -23,7 +24,7 @@ type Comment struct {
 func FetchComments(client *simpleforce.Client, whereCondition string) []Comment {
 	// Construct the query to fetch cases
 	q := fmt.Sprintf(`
-		SELECT Id, Created_By__c, Message__c, Name, Record_ID__c, Avatar__c, Record_Type__c
+		SELECT Id, Created_By__c, Message__c, Name, Record_ID__c, Avatar__c, Record_Type__c, Created_By_Name__c
 		FROM Comment__c
 		WHERE %s
 	`, whereCondition)
@@ -38,13 +39,14 @@ func FetchComments(client *simpleforce.Client, whereCondition string) []Comment 
 	for _, record := range result.Records {
 		// Populate the Case struct
 		c := Comment{
-			Id:         getStringField("Id", record),
-			CreatedBy:  getStringField("Created_By__c", record),
-			Message:    getStringField("Message__c", record),
-			Subject:    getStringField("Name", record),
-			RecordID:   getStringField("Record_ID__c", record),
-			RecordType: getStringField("Record_Type__c", record),
-			Avatar:     getStringField("Avatar__c", record),
+			Id:            getStringField("Id", record),
+			CreatedBy:     getStringField("Created_By__c", record),
+			Message:       getStringField("Message__c", record),
+			Subject:       getStringField("Name", record),
+			RecordID:      getStringField("Record_ID__c", record),
+			RecordType:    getStringField("Record_Type__c", record),
+			Avatar:        getStringField("Avatar__c", record),
+			CreatedByName: getStringField("Created_By_Name__c", record),
 		}
 
 		comments = append(comments, c)
@@ -61,6 +63,7 @@ func (c *Comment) Create(client *simpleforce.Client) {
 		Set("Record_ID__c", c.RecordID).
 		Set("Record_Type__c", c.RecordType).
 		Set("Avatar__c", c.Avatar).
+		Set("Created_By_Name__c", c.CreatedByName).
 		Create().Get()
 
 	// Add mentions
@@ -110,12 +113,13 @@ func (c *Comment) SendNotificationEmail(client *simpleforce.Client) {
 	}
 
 	err := knock.Trigger(recipients, map[string]any{
-		"Name":    name,
-		"Message": c.Message,
-		"From":    c.CreatedBy,
-		"Object":  c.RecordType,
-		"Url":     c.LinkToRecord(client),
-		"Domain":  "https://crm.proluxe.com",
+		"Name":     name,
+		"Message":  c.Message,
+		"From":     c.CreatedBy,
+		"FromName": c.CreatedByName,
+		"Object":   c.normalizeObjectName(),
+		"Url":      c.LinkToRecord(client),
+		"Domain":   "https://crm.proluxe.com",
 	})
 
 	if err != nil {
@@ -142,15 +146,38 @@ func (c *Comment) GetRecordName(client *simpleforce.Client) string {
 	return getStringField("Name", result.Records[0])
 }
 
-func (c *Comment) LinkToRecord(client *simpleforce.Client) string {
-	var link string
-
-	switch c.RecordType {
-	case "Opportunity":
-		link = fmt.Sprintf("/opportunities/%s", c.RecordID)
-	default:
-		link = fmt.Sprintf("/record/%s", c.RecordID)
+func (c *Comment) normalizeObjectName() string {
+	objectNames := map[string]string{
+		"Lead":            "Lead",
+		"Opportunity":     "Opportunity",
+		"Case":            "Case",
+		"Account":         "Account",
+		"Contact":         "Contact",
+		"Event__c":        "Event",
+		"Issue":           "Issue",
+		"rstk__soprod__c": "Product",
 	}
 
-	return link
+	if name, exists := objectNames[c.RecordType]; exists {
+		return name
+	}
+	return "Record"
+}
+
+func (c *Comment) LinkToRecord(client *simpleforce.Client) string {
+	recordLinks := map[string]string{
+		"Lead":            "leads",
+		"Opportunity":     "opportunities",
+		"Case":            "cases",
+		"Account":         "accounts",
+		"Contact":         "contacts",
+		"Event__c":        "events",
+		"Issue__c":        "issues",
+		"rstk__soprod__c": "products",
+	}
+
+	if path, exists := recordLinks[c.RecordType]; exists {
+		return fmt.Sprintf("/%s/%s", path, c.RecordID)
+	}
+	return fmt.Sprintf("/record/%s", c.RecordID)
 }

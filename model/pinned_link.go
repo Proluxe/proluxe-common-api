@@ -10,9 +10,9 @@ import (
 // PinnedLink represents a saved link for a user
 type PinnedLink struct {
 	Id    string `json:"Id"`
-	Email string `json:"Email__c"`
+	Email string `json:"Email"`
 	Name  string `json:"Name"`
-	Path  string `json:"Path__c"`
+	Path  string `json:"Path"`
 }
 
 // CreatePinnedLink saves a pinned link in Salesforce

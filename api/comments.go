@@ -30,8 +30,8 @@ func POST_COMMENT(c *gin.Context, App *util.App) {
 
 	_, email, _ := GetCurrentUser(c)
 	comment := model.Comment{
-		CreatedBy: email,
 		RecordID:  recordID,
+		CreatedBy: email,
 	}
 
 	if err := c.ShouldBindJSON(&comment); err != nil {
