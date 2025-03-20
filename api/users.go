@@ -25,11 +25,14 @@ func GET_DEFAULTS(c *gin.Context, App *util.App) {
 
 	users := model.FetchUsers(client, fmt.Sprintf("rstk__syusr_empl_email__c = '%s' LIMIT 1", email))
 
+	mentionableUsers := model.MentionableUsers(client)
+
 	c.JSON(http.StatusOK, gin.H{
-		"PinnedLinks": links,
-		"Issues":      issues,
-		"Events":      events,
-		"User":        users[0],
+		"PinnedLinks":      links,
+		"Issues":           issues,
+		"Events":           events,
+		"User":             users[0],
+		"MentionableUsers": mentionableUsers,
 	})
 }
 

@@ -17,6 +17,11 @@ type User struct {
 	NewOpportunityNotification bool   `json:"NewOpportunityNotification"`
 }
 
+type MentionableUser struct {
+	Id      string `json:"id"`
+	Display string `json:"display"`
+}
+
 func FetchUsers(client *simpleforce.Client, whereCondition string) []User {
 	q := fmt.Sprintf(`
 		SELECT Id, Name, rstk__syusr_empl_email__c, rstk__syusr_phone__c, Issue_Notifications__c, New_Lead_Notification__c, New_Opportunities_Notification__c
@@ -55,4 +60,17 @@ func (u *User) Update(client *simpleforce.Client) *simpleforce.SObject {
 		Set("New_Lead_Notification__c", u.NewLeadNotification).
 		Set("New_Opportunities_Notification__c", u.NewOpportunityNotification).
 		Update()
+}
+
+func MentionableUsers(client *simpleforce.Client) []MentionableUser {
+	users := FetchUsers(client, "rstk__syusr_obsolete__c = FALSE AND Id != 'a9W3u000000PBWpEAO'")
+
+	var mentionableUsers []MentionableUser
+	for _, user := range users {
+		mentionableUsers = append(mentionableUsers, MentionableUser{
+			Id:      user.Email,
+			Display: user.Name,
+		})
+	}
+	return mentionableUsers
 }
