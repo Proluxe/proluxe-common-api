@@ -30,7 +30,8 @@ func (k *Knock) Identify() *knock.User {
 	ctx, client := k.client()
 
 	user, _ := client.Users.Identify(ctx, &knock.IdentifyUserRequest{
-		ID: k.Email,
+		ID:    k.Email,
+		Email: k.Email,
 	})
 
 	k.User = user

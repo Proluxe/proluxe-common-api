@@ -15,6 +15,7 @@ type Comment struct {
 	Message        string           `json:"Message"`
 	RecordID       string           `json:"RecordID"`
 	RecordType     string           `json:"RecordType"` // This needs to be the SF object name
+	RecordName     string           `json:"RecordName"`
 	Subject        string           `json:"Subject"`
 	Avatar         string           `json:"Avatar"`
 	MentionedUsers []CommentMention `json:"MentionedUsers"`
@@ -24,7 +25,7 @@ type Comment struct {
 func FetchComments(client *simpleforce.Client, whereCondition string) []Comment {
 	// Construct the query to fetch cases
 	q := fmt.Sprintf(`
-		SELECT Id, Created_By__c, Message__c, Name, Record_ID__c, Avatar__c, Record_Type__c, Created_By_Name__c
+		SELECT Id, Created_By__c, Message__c, Name, Record_ID__c, Avatar__c, Record_Type__c, Record_Name__c, Created_By_Name__c
 		FROM Comment__c
 		WHERE %s
 	`, whereCondition)
@@ -45,6 +46,7 @@ func FetchComments(client *simpleforce.Client, whereCondition string) []Comment 
 			Subject:       getStringField("Name", record),
 			RecordID:      getStringField("Record_ID__c", record),
 			RecordType:    getStringField("Record_Type__c", record),
+			RecordName:    getStringField("Record_Name__c", record),
 			Avatar:        getStringField("Avatar__c", record),
 			CreatedByName: getStringField("Created_By_Name__c", record),
 		}
@@ -113,13 +115,14 @@ func (c *Comment) SendNotificationEmail(client *simpleforce.Client) {
 	}
 
 	err := knock.Trigger(recipients, map[string]any{
-		"Name":     name,
-		"Message":  c.Message,
-		"From":     c.CreatedBy,
-		"FromName": c.CreatedByName,
-		"Object":   c.normalizeObjectName(),
-		"Url":      c.LinkToRecord(client),
-		"Domain":   "https://crm.proluxe.com",
+		"Name":       name,
+		"Message":    c.Message,
+		"From":       c.CreatedBy,
+		"FromName":   c.CreatedByName,
+		"Object":     c.normalizeObjectName(),
+		"ObjectName": c.RecordName,
+		"Url":        c.LinkToRecord(client),
+		"Domain":     "https://crm.proluxe.com",
 	})
 
 	if err != nil {
