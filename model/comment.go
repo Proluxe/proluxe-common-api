@@ -156,7 +156,7 @@ func (c *Comment) normalizeObjectName() string {
 		"Case":            "Case",
 		"Account":         "Account",
 		"Contact":         "Contact",
-		"Event__c":        "Event",
+		"Events__c":       "Event",
 		"Issue":           "Issue",
 		"rstk__soprod__c": "Product",
 	}
@@ -174,7 +174,7 @@ func (c *Comment) LinkToRecord(client *simpleforce.Client) string {
 		"Case":            "cases",
 		"Account":         "accounts",
 		"Contact":         "contacts",
-		"Event__c":        "events",
+		"Events__c":       "events",
 		"Issue__c":        "issues",
 		"rstk__soprod__c": "products",
 	}
