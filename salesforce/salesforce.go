@@ -5,7 +5,7 @@ import (
 	"log"
 
 	u "github.com/scottraio/go-utils"
-	simpleforce "github.com/simpleforce/simpleforce"
+	simpleforce "github.com/scottraio/simpleforce"
 )
 
 type SF struct {

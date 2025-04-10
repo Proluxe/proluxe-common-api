@@ -5,7 +5,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/simpleforce/simpleforce"
+	"github.com/scottraio/simpleforce"
 )
 
 type CommentMention struct {

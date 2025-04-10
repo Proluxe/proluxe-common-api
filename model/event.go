@@ -6,7 +6,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/simpleforce/simpleforce"
+	"github.com/scottraio/simpleforce"
 )
 
 type Event struct {

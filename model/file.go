@@ -14,7 +14,7 @@ import (
 	"github.com/Proluxe/proluxe-common-api/services"
 	"github.com/Proluxe/proluxe-common-api/util"
 	"github.com/gin-gonic/gin"
-	"github.com/simpleforce/simpleforce"
+	"github.com/scottraio/simpleforce"
 )
 
 type File struct {

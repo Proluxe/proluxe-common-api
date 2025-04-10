@@ -3,7 +3,7 @@ package model
 import (
 	"log"
 
-	"github.com/simpleforce/simpleforce"
+	"github.com/scottraio/simpleforce"
 )
 
 type AlgoliaIndex struct {
@@ -12,34 +12,41 @@ type AlgoliaIndex struct {
 }
 
 func FetchAlgoliaProducts(client *simpleforce.Client) []AlgoliaIndex {
+	var allRecords []simpleforce.SObject
+
+	// Initial query
 	query := `
 		SELECT Id, Name
 		FROM rstk__soprod__c
 		WHERE rstk__soprod_activeind__c = true
 		ORDER BY CreatedDate DESC
 	`
-
-	// Execute the initial query
 	result, err := client.Query(query)
 	if err != nil {
-		log.Fatalf("Error executing query: %v", err)
+		log.Fatalf("Error executing initial query: %v", err)
+	}
+	allRecords = append(allRecords, result.Records...)
+
+	// Keep fetching more records if available
+	for !result.Done && result.NextRecordsURL != "" {
+		result, err = client.QueryMore(result.NextRecordsURL)
+		if err != nil {
+			log.Fatalf("Error during QueryMore: %v", err)
+		}
+		allRecords = append(allRecords, result.Records...)
 	}
 
-	// Set the Algolia index
-	products := setAlgoliaIndex(result)
-
-	return products
+	// Convert to AlgoliaIndex format
+	return setAlgoliaIndexFromSObjects(allRecords)
 }
 
-func setAlgoliaIndex(result *simpleforce.QueryResult) []AlgoliaIndex {
-	var index []AlgoliaIndex
-
-	for _, record := range result.Records {
-		index = append(index, AlgoliaIndex{
-			ObjectId: record["Id"].(string),
-			Name:     record["Name"].(string),
+func setAlgoliaIndexFromSObjects(records []simpleforce.SObject) []AlgoliaIndex {
+	var products []AlgoliaIndex
+	for _, r := range records {
+		products = append(products, AlgoliaIndex{
+			ObjectId: r["Id"].(string),
+			Name:     r["Name"].(string),
 		})
 	}
-
-	return index
+	return products
 }

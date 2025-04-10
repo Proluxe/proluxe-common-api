@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/simpleforce/simpleforce"
+	"github.com/scottraio/simpleforce"
 )
 
 type User struct {

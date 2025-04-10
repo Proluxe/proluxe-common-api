@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/simpleforce/simpleforce"
+	"github.com/scottraio/simpleforce"
 )
 
 // PinnedLink represents a saved link for a user

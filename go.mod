@@ -13,7 +13,7 @@ require (
 	github.com/mattevans/postmark-go v1.0.0
 	github.com/sashabaranov/go-openai v1.22.0
 	github.com/scottraio/go-utils v0.0.0-20221123081427-7ce0df56e01b
-	github.com/simpleforce/simpleforce v0.0.0-20220429021116-acf4ac67ef68
+	github.com/scottraio/simpleforce v0.0.0-20250410061729-b3731d135fee
 	github.com/supabase-community/supabase-go v0.0.4
 	golang.org/x/oauth2 v0.23.0
 	google.golang.org/api v0.199.0

@@ -5,7 +5,7 @@ import (
 	"log"
 
 	services "github.com/Proluxe/proluxe-common-api/services"
-	"github.com/simpleforce/simpleforce"
+	"github.com/scottraio/simpleforce"
 )
 
 type Issue struct {
