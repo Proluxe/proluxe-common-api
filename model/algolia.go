@@ -12,8 +12,6 @@ type AlgoliaIndex struct {
 }
 
 func FetchAlgoliaProducts(client *simpleforce.Client) []AlgoliaIndex {
-	var allRecords []simpleforce.SObject
-
 	// Initial query
 	query := `
 		SELECT Id, Name
@@ -21,6 +19,46 @@ func FetchAlgoliaProducts(client *simpleforce.Client) []AlgoliaIndex {
 		WHERE rstk__soprod_activeind__c = true
 		ORDER BY CreatedDate DESC
 	`
+
+	// Fetch records from Salesforce
+	records := FetchRecords(client, query)
+
+	// Return the records in AlgoliaIndex format
+	return records
+}
+
+func FetchAlgoliaCustomers(client *simpleforce.Client) []AlgoliaIndex {
+	// Initial query
+	query := `
+		SELECT Id, Name
+		FROM rstk__socust__c
+		ORDER BY CreatedDate DESC
+	`
+	// Fetch records from Salesforce
+	records := FetchRecords(client, query)
+
+	// Return the records in AlgoliaIndex format
+	return records
+}
+
+func FetchAlgoliaContacts(client *simpleforce.Client) []AlgoliaIndex {
+	// Initial query
+	query := `
+		SELECT Id, Name
+		FROM Contact
+		ORDER BY CreatedDate DESC
+	`
+
+	// Fetch records from Salesforce
+	records := FetchRecords(client, query)
+
+	// Return the records in AlgoliaIndex format
+	return records
+}
+
+func FetchRecords(client *simpleforce.Client, query string) []AlgoliaIndex {
+	var allRecords []simpleforce.SObject
+
 	result, err := client.Query(query)
 	if err != nil {
 		log.Fatalf("Error executing initial query: %v", err)
