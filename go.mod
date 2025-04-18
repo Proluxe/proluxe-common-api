@@ -11,6 +11,7 @@ require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/knocklabs/knock-go v0.1.20
 	github.com/mattevans/postmark-go v1.0.0
+	github.com/rollbar/rollbar-go v1.4.6
 	github.com/sashabaranov/go-openai v1.22.0
 	github.com/scottraio/go-utils v0.0.0-20221123081427-7ce0df56e01b
 	github.com/scottraio/simpleforce v0.0.0-20250410061729-b3731d135fee

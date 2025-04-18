@@ -7,6 +7,7 @@ import (
 
 	"github.com/Proluxe/proluxe-common-api/api"
 	"github.com/Proluxe/proluxe-common-api/salesforce"
+	"github.com/Proluxe/proluxe-common-api/services"
 	"github.com/Proluxe/proluxe-common-api/util"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-contrib/cors"
@@ -84,6 +85,9 @@ func main() {
 	// Setup JWT middleware
 	secret := u.GetDotEnvVariable("JWT_SECRET")
 	router.Use(JWTAuthMiddleware(secret))
+
+	// Setup error handling middleware
+	router.Use(services.ErrorHandling())
 
 	// Setup CORS
 	config := cors.DefaultConfig()
