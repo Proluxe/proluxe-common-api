@@ -25,6 +25,7 @@ func JWTAuthMiddleware(secret string) gin.HandlerFunc {
 			c.Request.URL.Path == "/webhook/leads" ||
 			c.Request.URL.Path == "/algolia/products" ||
 			c.Request.URL.Path == "/algolia/contacts" ||
+			c.Request.URL.Path == "/algolia/parts" ||
 			c.Request.URL.Path == "/algolia/customers" {
 			c.Next()
 			return
@@ -119,6 +120,11 @@ func main() {
 	router.GET("/algolia/contacts",
 		BasicAuthMiddleware(basicUsername, basicPassword),
 		apiRoute(api.GET_ALGOLIA_CONTACTS, &app),
+	)
+
+	router.GET("/algolia/parts",
+		BasicAuthMiddleware(basicUsername, basicPassword),
+		apiRoute(api.GET_ALGOLIA_PARTS, &app),
 	)
 
 	// Messages

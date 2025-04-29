@@ -23,3 +23,9 @@ func GET_ALGOLIA_CONTACTS(c *gin.Context, App *util.App) {
 
 	c.JSON(200, products)
 }
+
+func GET_ALGOLIA_PARTS(c *gin.Context, App *util.App) {
+	parts := model.FetchAlgoliaParts(App.SF.Client)
+
+	c.JSON(200, parts)
+}

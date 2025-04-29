@@ -56,6 +56,21 @@ func FetchAlgoliaContacts(client *simpleforce.Client) []AlgoliaIndex {
 	return records
 }
 
+func FetchAlgoliaParts(client *simpleforce.Client) []AlgoliaIndex {
+	// Initial query
+	query := `
+		SELECT Id, Name
+		FROM rstk__icitem__c
+		ORDER BY CreatedDate DESC
+	`
+
+	// Fetch records from Salesforce
+	records := FetchRecords(client, query)
+
+	// Return the records in AlgoliaIndex format
+	return records
+}
+
 func FetchRecords(client *simpleforce.Client, query string, nameField ...string) []AlgoliaIndex {
 	var allRecords []simpleforce.SObject
 
