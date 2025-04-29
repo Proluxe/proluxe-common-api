@@ -44,19 +44,19 @@ func FetchAlgoliaCustomers(client *simpleforce.Client) []AlgoliaIndex {
 func FetchAlgoliaContacts(client *simpleforce.Client) []AlgoliaIndex {
 	// Initial query
 	query := `
-		SELECT Id, Name
+		SELECT Id, Display_Name__c
 		FROM Contact
 		ORDER BY CreatedDate DESC
 	`
 
 	// Fetch records from Salesforce
-	records := FetchRecords(client, query)
+	records := FetchRecords(client, query, "Display_Name__c")
 
 	// Return the records in AlgoliaIndex format
 	return records
 }
 
-func FetchRecords(client *simpleforce.Client, query string) []AlgoliaIndex {
+func FetchRecords(client *simpleforce.Client, query string, nameField ...string) []AlgoliaIndex {
 	var allRecords []simpleforce.SObject
 
 	result, err := client.Query(query)
@@ -74,16 +74,22 @@ func FetchRecords(client *simpleforce.Client, query string) []AlgoliaIndex {
 		allRecords = append(allRecords, result.Records...)
 	}
 
+	// Determine the name field to use
+	fieldName := "Name"
+	if len(nameField) > 0 {
+		fieldName = nameField[0]
+	}
+
 	// Convert to AlgoliaIndex format
-	return setAlgoliaIndexFromSObjects(allRecords)
+	return setAlgoliaIndexFromSObjectsWithField(allRecords, fieldName)
 }
 
-func setAlgoliaIndexFromSObjects(records []simpleforce.SObject) []AlgoliaIndex {
+func setAlgoliaIndexFromSObjectsWithField(records []simpleforce.SObject, nameField string) []AlgoliaIndex {
 	var products []AlgoliaIndex
 	for _, r := range records {
 		products = append(products, AlgoliaIndex{
 			ObjectId: r["Id"].(string),
-			Name:     r["Name"].(string),
+			Name:     r[nameField].(string),
 		})
 	}
 	return products
