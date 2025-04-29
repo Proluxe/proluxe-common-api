@@ -10,6 +10,7 @@ import (
 // PinnedLink represents a saved link for a user
 type PinnedLink struct {
 	Id    string `json:"Id"`
+	App   string `json:"App"`
 	Email string `json:"Email"`
 	Name  string `json:"Name"`
 	Path  string `json:"Path"`
@@ -23,6 +24,7 @@ func CreatePinnedLink(client *simpleforce.Client, link PinnedLink) (PinnedLink, 
 	newLink := client.SObject("Pinned_Link__c").
 		Set("Email__c", link.Email).
 		Set("Name", link.Name).
+		Set("App__c", link.App).
 		Set("Path__c", link.Path)
 
 	// 🔍 Execute Create() and capture the returned object
@@ -42,12 +44,16 @@ func CreatePinnedLink(client *simpleforce.Client, link PinnedLink) (PinnedLink, 
 }
 
 // FetchPinnedLinks retrieves all pinned links for a given user from Salesforce
-func FetchPinnedLinks(client *simpleforce.Client, email string) ([]PinnedLink, error) {
+func FetchPinnedLinks(client *simpleforce.Client, email string, app ...string) ([]PinnedLink, error) {
 	query := fmt.Sprintf(`
-        SELECT Id, Name, Path__c, Email__c 
-        FROM Pinned_Link__c 
-        WHERE Email__c = '%s'
-    `, email)
+		SELECT Id, Name, Path__c, Email__c, App__c
+		FROM Pinned_Link__c 
+		WHERE Email__c = '%s'`, email)
+
+	// Add app filter if provided
+	if len(app) > 0 && app[0] != "" {
+		query += fmt.Sprintf(" AND App__c = '%s'", app[0])
+	}
 
 	log.Println("🔍 Fetching pinned links with query:", query)
 
@@ -64,6 +70,7 @@ func FetchPinnedLinks(client *simpleforce.Client, email string) ([]PinnedLink, e
 			Name:  getStringField("Name", record),
 			Path:  getStringField("Path__c", record),
 			Email: getStringField("Email__c", record),
+			App:   getStringField("App__c", record),
 		}
 		links = append(links, link)
 	}

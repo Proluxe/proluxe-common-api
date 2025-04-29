@@ -13,7 +13,9 @@ func GET_DEFAULTS(c *gin.Context, App *util.App) {
 	_, email, _ := GetCurrentUser(c)
 	client := App.SF.Client
 
-	links, err := model.FetchPinnedLinks(client, email)
+	origin := c.Query("app")
+
+	links, err := model.FetchPinnedLinks(client, email, origin)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch pinned links", "details": err.Error()})
 		return
