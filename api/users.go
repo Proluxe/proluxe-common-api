@@ -29,11 +29,18 @@ func GET_DEFAULTS(c *gin.Context, App *util.App) {
 
 	mentionableUsers := model.MentionableUsers(client)
 
+	var userResp interface{}
+	if len(users) > 0 {
+		userResp = users[0]
+	} else {
+		userResp = nil
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"PinnedLinks":      links,
 		"Issues":           issues,
 		"Events":           events,
-		"User":             users[0],
+		"User":             userResp,
 		"MentionableUsers": mentionableUsers,
 	})
 }
