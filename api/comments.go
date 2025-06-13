@@ -28,7 +28,13 @@ func POST_COMMENT(c *gin.Context, App *util.App) {
 	client := App.SF.Client
 	recordID := c.Param("recordID")
 
-	_, email, _ := GetCurrentUser(c)
+	emailParam := c.Query("email")
+	var email string
+	if emailParam != "" {
+		email = emailParam
+	} else {
+		_, email, _ = GetCurrentUser(c)
+	}
 	comment := model.Comment{
 		RecordID:  recordID,
 		CreatedBy: email,
