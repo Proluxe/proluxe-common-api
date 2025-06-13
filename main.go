@@ -37,6 +37,12 @@ func JWTAuthMiddleware(secret string) gin.HandlerFunc {
 			return
 		}
 
+		externalApiKeyHeader := c.GetHeader("X-External-Api-Key")
+		if externalApiKeyHeader != "" && externalApiKeyHeader == u.GetDotEnvVariable("EXTERNAL_API_KEY") {
+			c.Next()
+			return
+		}
+
 		tokenString := c.GetHeader("Authorization")
 		if tokenString == "" {
 			fmt.Println("Authorization token not provided")
@@ -82,6 +88,9 @@ func BasicAuthMiddleware(username, password string) gin.HandlerFunc {
 
 func main() {
 	router := gin.Default()
+
+	// Setup External API Key middleware
+	router.Use(ExternalApiKeyAuthMiddleware())
 
 	// Setup JWT middleware
 	secret := u.GetDotEnvVariable("JWT_SECRET")
