@@ -89,9 +89,6 @@ func BasicAuthMiddleware(username, password string) gin.HandlerFunc {
 func main() {
 	router := gin.Default()
 
-	// Setup External API Key middleware
-	router.Use(ExternalApiKeyAuthMiddleware())
-
 	// Setup JWT middleware
 	secret := u.GetDotEnvVariable("JWT_SECRET")
 	router.Use(JWTAuthMiddleware(secret))
