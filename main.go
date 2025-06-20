@@ -108,6 +108,31 @@ func main() {
 
 	// Health Check
 	router.GET("/", apiRoute(StatusOk, &app))
+
+	// Algolia Products (Basic Auth)
+	basicUsername := u.GetDotEnvVariable("ALGOLIA_AUTH_USER")
+	basicPassword := u.GetDotEnvVariable("ALGOLIA_AUTH_PASS")
+
+	router.GET("/algolia/products",
+		BasicAuthMiddleware(basicUsername, basicPassword),
+		apiRoute(api.GET_ALGOLIA_PRODUCTS, &app),
+	)
+
+	router.GET("/algolia/customers",
+		BasicAuthMiddleware(basicUsername, basicPassword),
+		apiRoute(api.GET_ALGOLIA_CUSTOMERS, &app),
+	)
+
+	router.GET("/algolia/contacts",
+		BasicAuthMiddleware(basicUsername, basicPassword),
+		apiRoute(api.GET_ALGOLIA_CONTACTS, &app),
+	)
+
+	router.GET("/algolia/parts",
+		BasicAuthMiddleware(basicUsername, basicPassword),
+		apiRoute(api.GET_ALGOLIA_PARTS, &app),
+	)
+
 	// Messages
 	router.GET("/messages/search/:email", apiRoute(api.GET_MESSAGES, &app))
 	router.GET("/messages/:email/:id", apiRoute(api.GET_MESSAGE_DETAILS, &app))
