@@ -1,6 +1,7 @@
 package model
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 	"time"
@@ -33,31 +34,22 @@ func (a *Address) fullAddress() string {
 	return street + a.City + ", " + a.State + " " + a.Zip + ", " + a.Country
 }
 
-func getStringField(field string, record map[string]interface{}) string {
+func GetStringField(field string, record map[string]interface{}) string {
 	if record == nil {
 		return ""
 	}
-
-	if value, ok := record[field]; ok && value != nil {
-		return value.(string)
-	}
-
-	return ""
-}
-
-// Helper function to get an optional string field from a nested map
-func getOptionalStringField(field string, nestedMap interface{}) string {
-	if nestedMap == nil {
+	val, ok := record[field]
+	if !ok || val == nil {
 		return ""
 	}
-	if nestedMapMap, ok := nestedMap.(map[string]interface{}); ok {
-		if value, exists := nestedMapMap[field]; exists {
-			if strValue, ok := value.(string); ok {
-				return strValue
-			}
-		}
+	switch v := val.(type) {
+	case string:
+		return v
+	case fmt.Stringer:
+		return v.String()
+	default:
+		return fmt.Sprintf("%v", v)
 	}
-	return ""
 }
 
 func getOptionalFloatField(field string, nestedMap interface{}) float64 {

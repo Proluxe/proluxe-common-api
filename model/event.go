@@ -48,23 +48,23 @@ func FetchEvents(client *simpleforce.Client, whereCondition string) []Event {
 	for _, record := range result.Records {
 		// Populate the Event struct
 		event := Event{
-			Id:               getStringField("Id", record),
-			Name:             getStringField("Name", record),
-			AddressLine1:     getStringField("Address_Line_1__c", record),
-			AddressLine2:     getStringField("Address_Line_2__c", record),
-			City:             getStringField("City__c", record),
-			StateProvince:    getStringField("State_Province__c", record),
-			ZipCode:          getStringField("Zip_Code__c", record),
-			Description:      getStringField("Description__c", record),
+			Id:               GetStringField("Id", record),
+			Name:             GetStringField("Name", record),
+			AddressLine1:     GetStringField("Address_Line_1__c", record),
+			AddressLine2:     GetStringField("Address_Line_2__c", record),
+			City:             GetStringField("City__c", record),
+			StateProvince:    GetStringField("State_Province__c", record),
+			ZipCode:          GetStringField("Zip_Code__c", record),
+			Description:      GetStringField("Description__c", record),
 			StartDateTime:    convertToTime(record["Start_Date_Time__c"].(string)),
 			EndDateTime:      convertToTime(record["End_Date_Time__c"].(string)),
-			Type:             getStringField("Type__c", record),
-			CreatedById:      getStringField("CreatedById", record),
-			LastModifiedById: getStringField("LastModifiedById", record),
-			OwnerId:          getStringField("OwnerId", record),
+			Type:             GetStringField("Type__c", record),
+			CreatedById:      GetStringField("CreatedById", record),
+			LastModifiedById: GetStringField("LastModifiedById", record),
+			OwnerId:          GetStringField("OwnerId", record),
 			Traveling:        getBoolField("Travel__c", record),
 			Informational:    getBoolField("Informational__c", record),
-			TextAddress:      getStringField("TextAddress__c", record),
+			TextAddress:      GetStringField("TextAddress__c", record),
 		}
 
 		events = append(events, event)

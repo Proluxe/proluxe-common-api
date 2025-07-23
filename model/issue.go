@@ -34,9 +34,9 @@ func FetchIssues(client *simpleforce.Client, whereCondition string) []Issue {
 
 	for _, record := range result.Records {
 		i := Issue{
-			Id:          getStringField("Id", record),
-			Name:        getStringField("Name", record),
-			Description: getStringField("Description__c", record),
+			Id:          GetStringField("Id", record),
+			Name:        GetStringField("Name", record),
+			Description: GetStringField("Description__c", record),
 			Closed:      getBoolField("Closed__c", record),
 		}
 

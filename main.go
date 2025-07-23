@@ -109,6 +109,9 @@ func main() {
 	// Health Check
 	router.GET("/", apiRoute(StatusOk, &app))
 
+	// Meta endpoint
+	router.GET("/meta", apiRoute(api.GET_META, &app))
+
 	// Algolia Products (Basic Auth)
 	basicUsername := u.GetDotEnvVariable("ALGOLIA_AUTH_USER")
 	basicPassword := u.GetDotEnvVariable("ALGOLIA_AUTH_PASS")

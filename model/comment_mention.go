@@ -35,11 +35,11 @@ func FetchMentions(client *simpleforce.Client, whereCondition string) []CommentM
 	for _, record := range result.Records {
 		// Populate the Case struct
 		c := CommentMention{
-			Id:         getStringField("Id", record),
-			RecordID:   getStringField("Record_ID__c", record),
-			RecordType: getStringField("Record_Type__c", record),
-			Email:      getStringField("Email__c", record),
-			CommentId:  getStringField("Comment__c", record),
+			Id:         GetStringField("Id", record),
+			RecordID:   GetStringField("Record_ID__c", record),
+			RecordType: GetStringField("Record_Type__c", record),
+			Email:      GetStringField("Email__c", record),
+			CommentId:  GetStringField("Comment__c", record),
 		}
 
 		mentions = append(mentions, c)
@@ -77,9 +77,9 @@ func AddMentions(client *simpleforce.Client, mentions []CommentMention) error {
 	existingSet := make(map[string]bool)
 	for _, record := range existingRecords.Records {
 		key := fmt.Sprintf("%s|%s|%s",
-			getStringField("Record_ID__c", record),
-			getStringField("Record_Type__c", record),
-			getStringField("Email__c", record),
+			GetStringField("Record_ID__c", record),
+			GetStringField("Record_Type__c", record),
+			GetStringField("Email__c", record),
 		)
 		existingSet[key] = true
 	}

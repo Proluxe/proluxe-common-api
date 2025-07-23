@@ -74,10 +74,10 @@ func FetchFiles(client *simpleforce.Client, whereCondition string) []SharedFile 
 	var files []SharedFile
 	for _, record := range result.Records {
 		f := SharedFile{
-			Object:     getStringField("Object__c", record),
-			ObjectId:   getStringField("Object_Id__c", record),
-			ObjectName: getStringField("Object_Name__c", record),
-			Path:       getStringField("Path__c", record),
+			Object:     GetStringField("Object__c", record),
+			ObjectId:   GetStringField("Object_Id__c", record),
+			ObjectName: GetStringField("Object_Name__c", record),
+			Path:       GetStringField("Path__c", record),
 		}
 
 		files = append(files, f)
@@ -206,10 +206,10 @@ func (f *File) FetchFilesForPath(folderPath string) []SharedFile {
 	var files []SharedFile
 	for _, record := range result.Records {
 		f := SharedFile{
-			Object:     getStringField("Object__c", record),
-			ObjectId:   getStringField("Object_Id__c", record),
-			ObjectName: getStringField("Object_Name__c", record),
-			Path:       getStringField("Path__c", record),
+			Object:     GetStringField("Object__c", record),
+			ObjectId:   GetStringField("Object_Id__c", record),
+			ObjectName: GetStringField("Object_Name__c", record),
+			Path:       GetStringField("Path__c", record),
 		}
 
 		files = append(files, f)

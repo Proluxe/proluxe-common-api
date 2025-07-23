@@ -40,15 +40,15 @@ func FetchComments(client *simpleforce.Client, whereCondition string) []Comment 
 	for _, record := range result.Records {
 		// Populate the Case struct
 		c := Comment{
-			Id:            getStringField("Id", record),
-			CreatedBy:     getStringField("Created_By__c", record),
-			Message:       getStringField("Message__c", record),
-			Subject:       getStringField("Name", record),
-			RecordID:      getStringField("Record_ID__c", record),
-			RecordType:    getStringField("Record_Type__c", record),
-			RecordName:    getStringField("Record_Name__c", record),
-			Avatar:        getStringField("Avatar__c", record),
-			CreatedByName: getStringField("Created_By_Name__c", record),
+			Id:            GetStringField("Id", record),
+			CreatedBy:     GetStringField("Created_By__c", record),
+			Message:       GetStringField("Message__c", record),
+			Subject:       GetStringField("Name", record),
+			RecordID:      GetStringField("Record_ID__c", record),
+			RecordType:    GetStringField("Record_Type__c", record),
+			RecordName:    GetStringField("Record_Name__c", record),
+			Avatar:        GetStringField("Avatar__c", record),
+			CreatedByName: GetStringField("Created_By_Name__c", record),
 		}
 
 		comments = append(comments, c)
@@ -146,7 +146,7 @@ func (c *Comment) GetRecordName(client *simpleforce.Client) string {
 	if err != nil {
 		log.Fatal("Error fetching record name: ", err)
 	}
-	return getStringField("Name", result.Records[0])
+	return GetStringField("Name", result.Records[0])
 }
 
 func (c *Comment) normalizeObjectName() string {

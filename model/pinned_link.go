@@ -66,11 +66,11 @@ func FetchPinnedLinks(client *simpleforce.Client, email string, app ...string) (
 	var links []PinnedLink
 	for _, record := range result.Records {
 		link := PinnedLink{
-			Id:    getStringField("Id", record),
-			Name:  getStringField("Name", record),
-			Path:  getStringField("Path__c", record),
-			Email: getStringField("Email__c", record),
-			App:   getStringField("App__c", record),
+			Id:    GetStringField("Id", record),
+			Name:  GetStringField("Name", record),
+			Path:  GetStringField("Path__c", record),
+			Email: GetStringField("Email__c", record),
+			App:   GetStringField("App__c", record),
 		}
 		links = append(links, link)
 	}

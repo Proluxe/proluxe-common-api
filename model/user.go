@@ -37,10 +37,10 @@ func FetchUsers(client *simpleforce.Client, whereCondition string) []User {
 	var users []User
 	for _, record := range result.Records {
 		u := User{
-			Id:                         getStringField("Id", record),
-			Name:                       getStringField("Name", record),
-			Email:                      getStringField("rstk__syusr_empl_email__c", record),
-			Phone:                      getStringField("rstk__syusr_phone__c", record),
+			Id:                         GetStringField("Id", record),
+			Name:                       GetStringField("Name", record),
+			Email:                      GetStringField("rstk__syusr_empl_email__c", record),
+			Phone:                      GetStringField("rstk__syusr_phone__c", record),
 			IssueNotifications:         getBoolField("Issue_Notifications__c", record),
 			NewLeadNotification:        getBoolField("New_Lead_Notification__c", record),
 			NewOpportunityNotification: getBoolField("New_Opportunities_Notification__c", record),
