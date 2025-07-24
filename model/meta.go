@@ -28,8 +28,9 @@ type FOBCode struct {
 }
 
 type ShipMethod struct {
-	Id   string `json:"Id"`
-	Name string `json:"Name"`
+	Id        string `json:"Id"`
+	Name      string `json:"Name"`
+	CarrierId string `json:"CarrierId"` // This is the lookup field to Carrier
 }
 
 type FreightTerm struct {
@@ -89,7 +90,7 @@ func FetchFOBCodes(client *simpleforce.Client, whereCondition string) []FOBCode 
 
 func FetchShipMethods(client *simpleforce.Client) []ShipMethod {
 	q := `
-		SELECT rstk__socarriervia_shipvia__c, Name
+		SELECT rstk__socarriervia_shipvia__c, Name, rstk__socarriervia_carrier__c
 		FROM rstk__socarriervia__c
 	`
 
@@ -101,8 +102,9 @@ func FetchShipMethods(client *simpleforce.Client) []ShipMethod {
 	for _, record := range result.Records {
 		// Use the lookup field value as the Ship Method id
 		methods = append(methods, ShipMethod{
-			Id:   GetStringField("rstk__socarriervia_shipvia__c", record),
-			Name: GetStringField("Name", record),
+			Id:        GetStringField("rstk__socarriervia_shipvia__c", record),
+			Name:      GetStringField("Name", record),
+			CarrierId: GetStringField("rstk__socarriervia_carrier__c", record),
 		})
 	}
 	return methods

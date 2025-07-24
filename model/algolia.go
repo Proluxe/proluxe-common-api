@@ -71,6 +71,17 @@ func FetchAlgoliaParts(client *simpleforce.Client) []AlgoliaIndex {
 	return records
 }
 
+// FetchAlgoliaVendors fetches all vendors from Salesforce (rstk__povend__c) and returns them in AlgoliaIndex format.
+func FetchAlgoliaVendors(client *simpleforce.Client) []AlgoliaIndex {
+	query := `
+		SELECT Id, Name
+		FROM rstk__povend__c
+		ORDER BY CreatedDate DESC
+	`
+	records := FetchRecords(client, query)
+	return records
+}
+
 func FetchRecords(client *simpleforce.Client, query string, nameField ...string) []AlgoliaIndex {
 	var allRecords []simpleforce.SObject
 

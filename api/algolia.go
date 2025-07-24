@@ -29,3 +29,9 @@ func GET_ALGOLIA_PARTS(c *gin.Context, App *util.App) {
 
 	c.JSON(200, parts)
 }
+
+func GET_ALGOLIA_VENDORS(c *gin.Context, App *util.App) {
+	vendors := model.FetchAlgoliaVendors(App.SF.Client)
+
+	c.JSON(200, vendors)
+}

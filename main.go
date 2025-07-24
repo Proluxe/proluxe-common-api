@@ -136,6 +136,11 @@ func main() {
 		apiRoute(api.GET_ALGOLIA_PARTS, &app),
 	)
 
+	router.GET("/algolia/vendors",
+		BasicAuthMiddleware(basicUsername, basicPassword),
+		apiRoute(api.GET_ALGOLIA_VENDORS, &app),
+	)
+
 	// Messages
 	router.GET("/messages/search/:email", apiRoute(api.GET_MESSAGES, &app))
 	router.GET("/messages/:email/:id", apiRoute(api.GET_MESSAGE_DETAILS, &app))
