@@ -26,6 +26,7 @@ func JWTAuthMiddleware(secret string) gin.HandlerFunc {
 			c.Request.URL.Path == "/algolia/products" ||
 			c.Request.URL.Path == "/algolia/contacts" ||
 			c.Request.URL.Path == "/algolia/parts" ||
+			c.Request.URL.Path == "/algolia/vendors" ||
 			c.Request.URL.Path == "/algolia/customers" {
 			c.Next()
 			return
