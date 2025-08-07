@@ -32,6 +32,7 @@ func FetchAlgoliaCustomers(client *simpleforce.Client) []AlgoliaIndex {
 	query := `
 		SELECT Id, Name
 		FROM rstk__socust__c
+		WHERE Archived__c = false AND rstk__socust_inactive__c = false
 		ORDER BY CreatedDate DESC
 	`
 	// Fetch records from Salesforce
