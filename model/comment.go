@@ -19,13 +19,14 @@ type Comment struct {
 	Subject        string           `json:"Subject"`
 	Avatar         string           `json:"Avatar"`
 	MentionedUsers []CommentMention `json:"MentionedUsers"`
+	CreatedDate    string           `json:"CreatedDate"`
 }
 
 // Fetch cases from Salesforce
 func FetchComments(client *simpleforce.Client, whereCondition string) []Comment {
 	// Construct the query to fetch cases
 	q := fmt.Sprintf(`
-		SELECT Id, Created_By__c, Message__c, Name, Record_ID__c, Avatar__c, Record_Type__c, Record_Name__c, Created_By_Name__c
+		SELECT Id, Created_By__c, Message__c, Name, Record_ID__c, Avatar__c, Record_Type__c, Record_Name__c, Created_By_Name__c, CreatedDate
 		FROM Comment__c
 		WHERE %s
 	`, whereCondition)
@@ -49,6 +50,7 @@ func FetchComments(client *simpleforce.Client, whereCondition string) []Comment 
 			RecordName:    GetStringField("Record_Name__c", record),
 			Avatar:        GetStringField("Avatar__c", record),
 			CreatedByName: GetStringField("Created_By_Name__c", record),
+			CreatedDate:   GetStringField("CreatedDate", record),
 		}
 
 		comments = append(comments, c)
