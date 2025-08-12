@@ -108,7 +108,7 @@ func FetchHomeTasks(client *simpleforce.Client, email string) []HomeRecord {
 	query := fmt.Sprintf(`
 		SELECT Id, Name, Project__c, Project__r.Name, Description__c, Status__c, Due_Date__c, Assigned_To__c, Assigned_To__r.Name, Assigned_To__r.Email__c, Parent_Card__c, Tags__c
 		FROM Project_Card__c
-		WHERE Assigned_To__r.Email__c = '%s'
+		WHERE Assigned_To__r.Email__c = '%s' AND Status__c != 'Done'
 		ORDER BY Name
 	`, email)
 
