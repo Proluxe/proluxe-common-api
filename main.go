@@ -113,6 +113,9 @@ func main() {
 	// Meta endpoint
 	router.GET("/meta", apiRoute(api.GET_META, &app))
 
+	// Home endpoint
+	router.GET("/home", apiRoute(api.GET_HOME, &app))
+
 	// Algolia Products (Basic Auth)
 	basicUsername := u.GetDotEnvVariable("ALGOLIA_AUTH_USER")
 	basicPassword := u.GetDotEnvVariable("ALGOLIA_AUTH_PASS")
@@ -184,6 +187,8 @@ func main() {
 	// Users
 	router.GET("/users/current", apiRoute(api.GET_DEFAULTS, &app))
 	router.POST("/users/:id/settings", apiRoute(api.POST_UPDATE_USER, &app))
+
+	router.POST("/users/:id/notes", apiRoute(api.POST_SAVE_USER_NOTES, &app))
 
 	// Start server
 	router.Run(":" + u.GetDotEnvVariable("PORT"))

@@ -12,6 +12,9 @@ type User struct {
 	Name                       string `json:"Name"`
 	Email                      string `json:"Email"`
 	Phone                      string `json:"Phone"`
+	Teams                      string `json:"Teams"`
+	IsAdmin                    bool   `json:"IsAdmin"`
+	Notes                      string `json:"Notes"`
 	IssueNotifications         bool   `json:"IssueNotifications"`
 	NewLeadNotification        bool   `json:"NewLeadNotification"`
 	NewOpportunityNotification bool   `json:"NewOpportunityNotification"`
@@ -24,8 +27,8 @@ type MentionableUser struct {
 
 func FetchUsers(client *simpleforce.Client, whereCondition string) []User {
 	q := fmt.Sprintf(`
-		SELECT Id, Name, rstk__syusr_empl_email__c, rstk__syusr_phone__c, Issue_Notifications__c, New_Lead_Notification__c, New_Opportunities_Notification__c
-		FROM rstk__syusr__c
+		SELECT Id, Name, Email__c, Phone__c, Last_Login__c, Teams__c, Is_Admin__c, Issue_Notifications__c, New_Lead_Notification__c, Notes__c, New_Opportunity_Notification__c
+		FROM App_User__c
 		WHERE %s
 	`, whereCondition)
 
@@ -39,11 +42,14 @@ func FetchUsers(client *simpleforce.Client, whereCondition string) []User {
 		u := User{
 			Id:                         GetStringField("Id", record),
 			Name:                       GetStringField("Name", record),
-			Email:                      GetStringField("rstk__syusr_empl_email__c", record),
-			Phone:                      GetStringField("rstk__syusr_phone__c", record),
+			Email:                      GetStringField("Email__c", record),
+			Phone:                      GetStringField("Phone__c", record),
+			Teams:                      GetStringField("Teams__c", record),
 			IssueNotifications:         getBoolField("Issue_Notifications__c", record),
 			NewLeadNotification:        getBoolField("New_Lead_Notification__c", record),
-			NewOpportunityNotification: getBoolField("New_Opportunities_Notification__c", record),
+			NewOpportunityNotification: getBoolField("New_Opportunity_Notification__c", record),
+			IsAdmin:                    getBoolField("Is_Admin__c", record),
+			Notes:                      GetStringField("Notes__c", record),
 		}
 
 		users = append(users, u)
@@ -52,10 +58,17 @@ func FetchUsers(client *simpleforce.Client, whereCondition string) []User {
 	return users
 }
 
-func (u *User) Update(client *simpleforce.Client) *simpleforce.SObject {
-	return client.SObject("rstk__syusr__c").
+func (u *User) SaveNotes(client *simpleforce.Client) *simpleforce.SObject {
+	return client.SObject("App_User__c").
 		Set("Id", u.Id).
-		Set("rstk__syusr_phone__c", u.Phone).
+		Set("Notes__c", u.Notes).
+		Update()
+}
+
+func (u *User) Update(client *simpleforce.Client) *simpleforce.SObject {
+	return client.SObject("App_User__c").
+		Set("Id", u.Id).
+		Set("Phone__c", u.Phone).
 		Set("Issue_Notifications__c", u.IssueNotifications).
 		Set("New_Lead_Notification__c", u.NewLeadNotification).
 		Set("New_Opportunities_Notification__c", u.NewOpportunityNotification).
@@ -63,7 +76,7 @@ func (u *User) Update(client *simpleforce.Client) *simpleforce.SObject {
 }
 
 func MentionableUsers(client *simpleforce.Client) []MentionableUser {
-	users := FetchUsers(client, "rstk__syusr_obsolete__c = FALSE AND Id != 'a9W3u000000PBWpEAO'")
+	users := FetchUsers(client, "Id != null")
 
 	var mentionableUsers []MentionableUser
 	for _, user := range users {
