@@ -17,10 +17,6 @@ func main() {
 	router := gin.Default()
 	env := u.GetDotEnvVariable("ENV")
 
-	// Setup JWT middleware
-	secret := u.GetDotEnvVariable("JWT_SECRET")
-	router.Use(middleware.AuthMiddleware(secret))
-
 	// Setup error handling middleware
 	router.Use(services.ErrorHandling())
 
