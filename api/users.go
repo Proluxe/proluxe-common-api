@@ -9,6 +9,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func GET_USERS(c *gin.Context, App *util.App) {
+	client := App.SF.Client
+
+	// Fetch all users with a specific condition
+	whereCondition := "Id != NULL"
+	users := model.FetchAppUsers(client, whereCondition)
+
+	if len(users) == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "No active users found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, users)
+}
+
 func POST_SAVE_USER_NOTES(c *gin.Context, App *util.App) {
 	client := App.SF.Client
 

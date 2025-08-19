@@ -14,10 +14,42 @@ type User struct {
 	Phone                      string `json:"Phone"`
 	Teams                      string `json:"Teams"`
 	IsAdmin                    bool   `json:"IsAdmin"`
-	Notes                      string `json:"Notes"`
 	IssueNotifications         bool   `json:"IssueNotifications"`
 	NewLeadNotification        bool   `json:"NewLeadNotification"`
 	NewOpportunityNotification bool   `json:"NewOpportunityNotification"`
+	Notes                      string `json:"Notes"`
+}
+
+func FetchAppUsers(client *simpleforce.Client, whereCondition string) []User {
+	q := fmt.Sprintf(`
+		SELECT Id, Name, Email__c, Phone__c, Last_Login__c, Teams__c, Is_Admin__c, Issue_Notifications__c, New_Lead_Notification__c, New_Opportunity_Notification__c
+		FROM App_User__c
+		WHERE %s
+	`, whereCondition)
+
+	result, err := client.Query(q)
+	if err != nil {
+		log.Fatal("Error: ", err)
+	}
+
+	var users []User
+	for _, record := range result.Records {
+		u := User{
+			Id:                         GetStringField("Id", record),
+			Name:                       GetStringField("Name", record),
+			Email:                      GetStringField("Email__c", record),
+			Phone:                      GetStringField("Phone__c", record),
+			Teams:                      GetStringField("Teams__c", record),
+			IssueNotifications:         getBoolField("Issue_Notifications__c", record),
+			NewLeadNotification:        getBoolField("New_Lead_Notification__c", record),
+			NewOpportunityNotification: getBoolField("New_Opportunity_Notification__c", record),
+			IsAdmin:                    getBoolField("Is_Admin__c", record),
+		}
+
+		users = append(users, u)
+	}
+
+	return users
 }
 
 type MentionableUser struct {

@@ -5,11 +5,9 @@ import (
 	"time"
 
 	"github.com/Proluxe/proluxe-common-api/api"
-	middleware "github.com/Proluxe/proluxe-common-api/middleware"
 	"github.com/Proluxe/proluxe-common-api/salesforce"
 	"github.com/Proluxe/proluxe-common-api/util"
 	"github.com/gin-gonic/gin"
-	u "github.com/scottraio/go-utils"
 )
 
 func SetupRoutes(router *gin.Engine, app *util.App) {
@@ -23,32 +21,23 @@ func SetupRoutes(router *gin.Engine, app *util.App) {
 	// Home endpoint
 	router.GET("/home", apiRoute(api.GET_HOME, app))
 
-	// Algolia Products (Basic Auth)
-	basicUsername := u.GetDotEnvVariable("ALGOLIA_AUTH_USER")
-	basicPassword := u.GetDotEnvVariable("ALGOLIA_AUTH_PASS")
-
 	router.GET("/algolia/products",
-		middleware.BasicAuthMiddleware(basicUsername, basicPassword),
 		apiRoute(api.GET_ALGOLIA_PRODUCTS, app),
 	)
 
 	router.GET("/algolia/customers",
-		middleware.BasicAuthMiddleware(basicUsername, basicPassword),
 		apiRoute(api.GET_ALGOLIA_CUSTOMERS, app),
 	)
 
 	router.GET("/algolia/contacts",
-		middleware.BasicAuthMiddleware(basicUsername, basicPassword),
 		apiRoute(api.GET_ALGOLIA_CONTACTS, app),
 	)
 
 	router.GET("/algolia/parts",
-		middleware.BasicAuthMiddleware(basicUsername, basicPassword),
 		apiRoute(api.GET_ALGOLIA_PARTS, app),
 	)
 
 	router.GET("/algolia/vendors",
-		middleware.BasicAuthMiddleware(basicUsername, basicPassword),
 		apiRoute(api.GET_ALGOLIA_VENDORS, app),
 	)
 
@@ -92,6 +81,7 @@ func SetupRoutes(router *gin.Engine, app *util.App) {
 	router.POST("/issues/:id/close", apiRoute(api.POST_CLOSE_ISSUE, app))
 
 	// Users
+	router.GET("/users", apiRoute(api.GET_USERS, app))
 	router.GET("/users/current", apiRoute(api.GET_DEFAULTS, app))
 	router.POST("/users/:id/settings", apiRoute(api.POST_UPDATE_USER, app))
 
