@@ -2,6 +2,26 @@
 
 API for Proluxe MFG 
 
+## Authentication & User Context
+
+### `GetCurrentUser` Helper
+
+The `GetCurrentUser` function is used throughout the API to extract the current user's email address from the request context.
+
+**Behavior (as of August 2025):**
+- The function now reads the user's email from the `X-User-Email` HTTP header.
+- It returns a single string: the user's email address.
+- If the header is missing, it returns an empty string and logs a warning.
+
+**Usage Example:**
+```go
+email := GetCurrentUser(c)
+```
+
+**Breaking Change:**  
+Previous versions of this function returned three values (name, email, avatar) extracted from a JWT. All usages must now expect a single return value (email). Update any code that previously used name or avatar accordingly.
+
+
 ## BigQuery
 
 For local development you must authenticate with Google Cloud. Run the following command and follow the prompts:

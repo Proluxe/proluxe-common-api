@@ -34,7 +34,7 @@ func POST_CREATE_PINNED_LINK(c *gin.Context, app *util.App) {
 
 // GET_PINNED_LINKS retrieves all pinned links for a user
 func GET_PINNED_LINKS(c *gin.Context, app *util.App) {
-	_, email, _ := GetCurrentUser(c)
+	email := GetCurrentUser(c)
 	client := app.SF.Client
 
 	origin := c.Query("app")

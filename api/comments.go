@@ -33,7 +33,7 @@ func POST_COMMENT(c *gin.Context, App *util.App) {
 	if emailParam != "" {
 		email = emailParam
 	} else {
-		_, email, _ = GetCurrentUser(c)
+		email = GetCurrentUser(c)
 	}
 	comment := model.Comment{
 		RecordID:  recordID,

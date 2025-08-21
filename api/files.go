@@ -67,7 +67,7 @@ func POST_SEND_FILES(c *gin.Context, App *util.App) {
 	}
 
 	if url != "" {
-		currentUserEmail, _, _ := GetCurrentUser(c)
+		currentUserEmail := GetCurrentUser(c)
 
 		err = file.SendFile(currentUserEmail, payload.Email, payload.Path, url)
 		if err != nil {
@@ -215,7 +215,7 @@ func POST_SHARE_FILES(c *gin.Context, App *util.App) {
 			Upsert()
 	}
 
-	currentUserEmail, _, _ := GetCurrentUser(c)
+	currentUserEmail := GetCurrentUser(c)
 	err := file.SendFileShareConfirmationEmail(currentUserEmail, payload.Path, payload.SharedItems)
 
 	if err != nil {

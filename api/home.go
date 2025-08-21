@@ -11,7 +11,7 @@ import (
 func GET_HOME(c *gin.Context, App *util.App) {
 	client := App.SF.Client
 
-	_, email, _ := GetCurrentUser(c)
+	email := GetCurrentUser(c)
 
 	// Fetch leads
 	leads := model.FetchHomeLeads(client)

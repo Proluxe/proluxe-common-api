@@ -3,42 +3,24 @@ package api
 import (
 	"log"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 )
 
-func GetCurrentUser(c *gin.Context) (string, string, string) {
-	user, exists := c.Get("User")
-	if !exists {
-		log.Println("User not found in context")
-		return "", "", ""
+/*
+GetCurrentUser extracts the user's email from the X-User-Email header.
+
+Returns the email as a string, or an empty string if not present.
+
+Usage:
+
+	email := GetCurrentUser(c)
+*/
+func GetCurrentUser(c *gin.Context) string {
+	email := c.GetHeader("X-User-Email")
+	if email == "" {
+		log.Println("X-User-Email header not found")
 	}
-
-	// Type assertion to convert user to map
-	userMap, ok := user.(jwt.MapClaims)
-	if !ok {
-		log.Println("User type assertion failed")
-		return "", "", ""
-	}
-
-	// Extract user details
-	name, nameOk := userMap["name"].(string)
-	email, emailOk := userMap["id"].(string)
-	avatar, avatarOk := userMap["avatar"].(string)
-
-	if !nameOk {
-		log.Println("Failed to extract user name")
-	}
-
-	if !emailOk {
-		log.Println("Failed to extract user email")
-	}
-
-	if !avatarOk {
-		log.Println("Failed to extract user avatar")
-	}
-
-	return name, email, avatar
+	return email
 }
 
 func parseFloat(value interface{}) float64 {

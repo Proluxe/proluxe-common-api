@@ -46,7 +46,7 @@ func POST_SAVE_USER_NOTES(c *gin.Context, App *util.App) {
 }
 
 func GET_DEFAULTS(c *gin.Context, App *util.App) {
-	_, email, _ := GetCurrentUser(c)
+	email := GetCurrentUser(c)
 	client := App.SF.Client
 
 	origin := c.Query("app")
