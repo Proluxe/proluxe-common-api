@@ -85,7 +85,7 @@ func FetchAlgoliaVendors(client *simpleforce.Client) []AlgoliaIndex {
 
 func FetchAlgoliaCatalog(client *simpleforce.Client) []AlgoliaIndex {
 	query := `
-		SELECT Id, Name
+		SELECT Model_Number__c, Name
 		FROM Model__c
 		ORDER BY CreatedDate DESC
 	`
