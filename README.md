@@ -37,6 +37,45 @@ cp /home/scott/.config/gcloud/application_default_credentials.json .
 
 ``` 
 
+## AlgoliaIndex Fetching and Flexible SOQL Mapping
+
+The `model/algolia.go` helpers provide a flexible way to fetch and map Salesforce records for Algolia indexing.
+
+### Usage
+
+You can now specify both the field to use as the Algolia `objectID` and the field to use as the display `Name` when calling `FetchRecords`:
+
+```go
+// Use default fields ("Id" for objectID, "Name" for Name)
+records := FetchRecords(client, soqlQuery)
+
+// Use custom fields (e.g., "Model_Number__c" as objectID, "Name" as Name)
+records := FetchRecords(client, soqlQuery, "Model_Number__c", "Name")
+```
+
+All `FetchAlgolia*` helpers now use this pattern for clarity and flexibility.
+
+### Example
+
+```go
+// Fetch catalog models using Model_Number__c as the Algolia objectID
+catalog := FetchAlgoliaCatalog(client)
+// catalog[0].ObjectId == Model_Number__c
+// catalog[0].Name == Name
+```
+
+**Note:**  
+If you pass only one field, it is used as the objectID and "Name" is used for the name. If you pass two fields, the first is the objectID, the second is the name.
+
+### Testing
+
+Unit tests are not yet implemented for these helpers.  
+**TODO:** Add tests for:
+- Mapping of idField and nameField
+- Handling of missing/invalid fields
+- SOQL query error handling
+- End-to-end mapping from Salesforce SObject to AlgoliaIndex
+
 ```
 WITH RECURSIVE BomHierarchy AS (
     -- Anchor part: Initial selection from bom_costs, incorporating QtyOrdered
