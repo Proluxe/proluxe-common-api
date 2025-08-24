@@ -41,6 +41,10 @@ func SetupRoutes(router *gin.Engine, app *util.App) {
 		apiRoute(api.GET_ALGOLIA_VENDORS, app),
 	)
 
+	router.GET("/algolia/catalog",
+		apiRoute(api.GET_ALGOLIA_CATALOG, app),
+	)
+
 	// Messages
 	router.GET("/messages/search/:email", apiRoute(api.GET_MESSAGES, app))
 	router.GET("/messages/:email/:id", apiRoute(api.GET_MESSAGE_DETAILS, app))

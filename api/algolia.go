@@ -35,3 +35,9 @@ func GET_ALGOLIA_VENDORS(c *gin.Context, App *util.App) {
 
 	c.JSON(200, vendors)
 }
+
+func GET_ALGOLIA_CATALOG(c *gin.Context, App *util.App) {
+	catalog := model.FetchAlgoliaCatalog(App.SF.Client)
+
+	c.JSON(200, catalog)
+}
